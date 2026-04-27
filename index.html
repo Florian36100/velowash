@@ -1,0 +1,1370 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <title>VéloWash — Lavage de vélos à domicile</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:          #f4f7ff;
+      --surface:     #ffffff;
+      --navy:        #0d1f3c;
+      --blue:        #1a6bff;
+      --blue-mid:    #3d87ff;
+      --blue-pale:   #e8f0ff;
+      --blue-light:  rgba(26,107,255,0.08);
+      --cyan:        #00c2ff;
+      --muted:       #6b7a99;
+      --border:      rgba(13,31,60,0.08);
+      --ease-out:    cubic-bezier(0.16, 1, 0.3, 1);
+      --ease-spring: cubic-bezier(0.32, 0.72, 0, 1);
+    }
+
+    /* ══ DARK MODE ══ */
+    html.dark {
+      --bg:         #080e1c;
+      --surface:    #0f1a2e;
+      --navy:       #e8eeff;
+      --blue:       #4d8bff;
+      --blue-mid:   #6da0ff;
+      --blue-pale:  #101e38;
+      --blue-light: rgba(77,139,255,0.1);
+      --cyan:       #00d4ff;
+      --muted:      #7a8eb0;
+      --border:     rgba(200,220,255,0.07);
+    }
+    html.dark body { background: var(--bg); color: var(--navy); }
+    html.dark nav  { background: rgba(8,14,28,0.88); border-color: rgba(77,139,255,0.12); box-shadow: 0 4px 32px rgba(0,0,0,0.4), 0 1px 0 rgba(255,255,255,0.04) inset; }
+    html.dark nav.scrolled { background: rgba(8,14,28,0.97); }
+    html.dark .nav-logo { color: var(--navy); }
+    html.dark .nav-links a { color: var(--muted); }
+    html.dark .nav-links a:hover { color: var(--navy); }
+    html.dark .btn-ghost { color: var(--muted); }
+    html.dark .btn-ghost:hover { background: var(--blue-pale); color: var(--navy); }
+    html.dark .formule-shell { background: rgba(200,220,255,0.03); border-color: rgba(77,139,255,0.1); }
+    html.dark .formule-card { background: var(--surface); }
+    html.dark .formule-name { color: var(--navy); }
+    html.dark .formule-desc { color: var(--muted); }
+    html.dark .formule-price { color: var(--navy); }
+    html.dark .formule-features li { color: var(--muted); border-color: var(--border); }
+    html.dark .step-shell { background: var(--surface); border-color: var(--border); }
+    html.dark .step-title { color: var(--navy); }
+    html.dark .step-desc { color: var(--muted); }
+    html.dark .avantage-shell { background: var(--surface); border-color: var(--border); }
+    html.dark .avantage-title { color: var(--navy); }
+    html.dark .avantage-desc { color: var(--muted); }
+    html.dark .avis-shell { background: rgba(200,220,255,0.03); border-color: rgba(77,139,255,0.08); }
+    html.dark .avis-card { background: var(--surface); }
+    html.dark .avis-text { color: var(--muted); }
+    html.dark .avis-name { color: var(--navy); }
+    html.dark .avis-meta { color: rgba(122,142,176,0.6); }
+    html.dark .form-shell { background: var(--surface); border-color: var(--border); }
+    html.dark .form-input { background: var(--bg); border-color: rgba(77,139,255,0.15); color: var(--navy); }
+    html.dark .form-input:focus { border-color: var(--blue); }
+    html.dark .form-label { color: var(--muted); }
+    html.dark .form-select { background: var(--bg); border-color: rgba(77,139,255,0.15); color: var(--navy); }
+    html.dark footer { background: #060c18; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Outfit', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--navy);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* ══════════ NAV ══════════ */
+    nav {
+      position: fixed;
+      top: 18px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 200;
+      background: rgba(244,247,255,0.88);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(26,107,255,0.12);
+      border-radius: 100px;
+      padding: 0 6px 0 24px;
+      height: 52px;
+      display: flex;
+      align-items: center;
+      gap: 28px;
+      box-shadow: 0 4px 32px rgba(13,31,60,0.08), 0 1px 0 rgba(255,255,255,0.9) inset;
+      transition: background 0.4s var(--ease-out), box-shadow 0.4s;
+      white-space: nowrap;
+    }
+    nav.scrolled {
+      background: rgba(244,247,255,0.97);
+      box-shadow: 0 8px 48px rgba(13,31,60,0.12), 0 1px 0 rgba(255,255,255,0.9) inset;
+    }
+
+    .nav-logo {
+      font-size: 15px;
+      font-weight: 800;
+      color: var(--navy);
+      letter-spacing: -0.4px;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+    .nav-logo-mark {
+      width: 28px; height: 28px;
+      background: var(--blue);
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .nav-logo-mark svg { width: 15px; height: 15px; stroke: #fff; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+    .nav-links {
+      display: flex; align-items: center;
+      gap: 22px; list-style: none;
+    }
+    .nav-links a {
+      font-size: 13px; font-weight: 500;
+      color: var(--muted); text-decoration: none;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--navy); }
+
+    .nav-actions { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+
+    .btn-ghost {
+      font-size: 13px; font-weight: 600;
+      color: var(--muted); background: none;
+      border: none; cursor: pointer; font-family: inherit;
+      padding: 7px 12px; border-radius: 100px;
+      text-decoration: none;
+      display: inline-flex; align-items: center; gap: 6px;
+      transition: background 0.2s, color 0.2s;
+    }
+    .btn-ghost:hover { background: var(--blue-pale); color: var(--navy); }
+
+    .btn-dark-toggle {
+      width: 34px; height: 34px; border-radius: 50%;
+      background: var(--blue-pale);
+      border: 1px solid rgba(26,107,255,0.15);
+      cursor: pointer; display: flex; align-items: center; justify-content: center;
+      color: var(--navy); transition: all 0.3s var(--ease-out); flex-shrink: 0;
+    }
+    .btn-dark-toggle:hover { background: var(--blue); color: #fff; transform: rotate(15deg); }
+    .btn-dark-toggle svg { width: 15px; height: 15px; stroke: currentColor; fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+    .icon-sun { display: block; } .icon-moon { display: none; }
+    html.dark .icon-sun { display: none; } html.dark .icon-moon { display: block; }
+    html.dark .btn-dark-toggle { background: var(--blue-pale); border-color: rgba(77,139,255,0.2); }
+    html.dark .btn-dark-toggle:hover { background: var(--blue); }
+
+    .btn-primary {
+      background: var(--blue); color: #fff;
+      border: none; border-radius: 100px;
+      padding: 11px 18px 11px 20px;
+      font-size: 13px; font-weight: 700;
+      cursor: pointer; font-family: inherit;
+      text-decoration: none;
+      display: inline-flex; align-items: center; gap: 8px;
+      transition: all 0.3s var(--ease-out);
+    }
+    .btn-primary:hover { background: var(--navy); transform: translateY(-1px); box-shadow: 0 8px 24px rgba(26,107,255,0.3); }
+    .btn-primary:active { transform: scale(0.97); }
+    .btn-primary-circle {
+      width: 22px; height: 22px; border-radius: 50%;
+      background: rgba(255,255,255,0.2);
+      display: flex; align-items: center; justify-content: center;
+      transition: transform 0.3s var(--ease-out), background 0.2s;
+      flex-shrink: 0;
+    }
+    .btn-primary:hover .btn-primary-circle { transform: translateX(2px) translateY(-1px); background: rgba(255,255,255,0.3); }
+    .btn-primary-circle svg { width: 11px; height: 11px; stroke: #fff; fill: none; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+
+    /* ══════════ HERO ══════════ */
+    .hero {
+      min-height: 100dvh;
+      background: linear-gradient(145deg, var(--navy) 0%, #0a2a5e 60%, #0d1f3c 100%);
+      display: flex;
+      align-items: flex-end;
+      padding: 0 6vw 90px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-glow {
+      position: absolute;
+      width: 600px; height: 600px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(26,107,255,0.25) 0%, transparent 70%);
+      top: -100px; right: -100px;
+      pointer-events: none;
+    }
+    .hero-glow-2 {
+      position: absolute;
+      width: 400px; height: 400px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(0,194,255,0.12) 0%, transparent 70%);
+      bottom: 0; left: 30%;
+      pointer-events: none;
+    }
+
+    /* Bike SVG decoration */
+    .hero-bike {
+      position: absolute;
+      right: 6vw;
+      bottom: 80px;
+      opacity: 0.06;
+      pointer-events: none;
+    }
+    .hero-bike svg { width: 420px; height: 280px; }
+
+    .hero-inner { position: relative; z-index: 2; max-width: 700px; }
+
+    .hero-eyebrow {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-size: 10.5px; font-weight: 700;
+      letter-spacing: 2.5px; text-transform: uppercase;
+      color: var(--cyan); margin-bottom: 28px;
+      padding: 6px 14px;
+      border: 1px solid rgba(0,194,255,0.25);
+      border-radius: 100px;
+      background: rgba(0,194,255,0.08);
+    }
+    .hero-dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--cyan);
+      animation: blink 2s ease-in-out infinite;
+    }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+    .hero h1 {
+      font-size: clamp(48px, 7vw, 88px);
+      font-weight: 800;
+      color: #fff;
+      line-height: 1.0;
+      letter-spacing: -3px;
+      margin-bottom: 24px;
+    }
+    .hero h1 em {
+      font-style: normal;
+      color: var(--cyan);
+      letter-spacing: -2px;
+    }
+
+    .hero-sub {
+      font-size: 16px; font-weight: 300;
+      color: rgba(255,255,255,0.5);
+      max-width: 480px;
+      margin-bottom: 44px;
+      line-height: 1.8;
+    }
+
+    .hero-ctas { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+
+    .btn-hero {
+      background: var(--blue); color: #fff;
+      border: none; border-radius: 100px;
+      padding: 16px 20px 16px 28px;
+      font-size: 15px; font-weight: 700;
+      cursor: pointer; font-family: inherit;
+      text-decoration: none;
+      display: inline-flex; align-items: center; gap: 10px;
+      transition: all 0.35s var(--ease-out);
+      box-shadow: 0 4px 24px rgba(26,107,255,0.4);
+    }
+    .btn-hero:hover { background: #fff; color: var(--blue); box-shadow: 0 8px 40px rgba(26,107,255,0.5); transform: translateY(-2px); }
+    .btn-hero-circle {
+      width: 28px; height: 28px; border-radius: 50%;
+      background: rgba(255,255,255,0.2);
+      display: flex; align-items: center; justify-content: center;
+      transition: transform 0.3s var(--ease-out), background 0.2s;
+    }
+    .btn-hero:hover .btn-hero-circle { background: rgba(26,107,255,0.15); transform: translateX(2px) translateY(-1px); }
+    .btn-hero-circle svg { width: 13px; height: 13px; stroke: currentColor; fill: none; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+
+    .btn-hero-ghost {
+      font-size: 14px; font-weight: 600;
+      color: rgba(255,255,255,0.55);
+      text-decoration: none;
+      padding: 14px 20px;
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 100px;
+      transition: all 0.25s;
+    }
+    .btn-hero-ghost:hover { color: #fff; border-color: rgba(255,255,255,0.3); background: rgba(255,255,255,0.05); }
+
+    .hero-stats {
+      position: absolute;
+      bottom: 90px; right: 6vw;
+      display: flex; gap: 32px;
+      z-index: 2;
+    }
+    .hero-stat { text-align: right; }
+    .hero-stat-val { font-size: 28px; font-weight: 800; color: #fff; letter-spacing: -1px; line-height: 1; }
+    .hero-stat-lbl { font-size: 11px; color: rgba(255,255,255,0.4); text-transform: uppercase; letter-spacing: 1px; margin-top: 4px; font-weight: 600; }
+
+    /* ══════════ SECTION BASE ══════════ */
+    .section-pad { padding: 110px 6vw; }
+    .section-eyebrow {
+      display: inline-block;
+      font-size: 10px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 2.5px;
+      color: var(--blue); margin-bottom: 14px;
+      padding: 5px 12px;
+      background: var(--blue-light);
+      border-radius: 100px;
+    }
+    .section-title {
+      font-size: clamp(30px, 4vw, 48px);
+      font-weight: 800;
+      color: var(--navy);
+      letter-spacing: -1.5px;
+      line-height: 1.1;
+      margin-bottom: 16px;
+    }
+    .section-title em { font-style: normal; color: var(--blue); }
+    .section-sub { font-size: 15px; color: var(--muted); max-width: 520px; line-height: 1.75; }
+
+    /* ══════════ FORMULES BENTO ══════════ */
+    #formules { background: var(--bg); }
+
+    .formules-bento {
+      display: grid;
+      grid-template-columns: 1fr 1.3fr 1fr;
+      gap: 14px;
+      margin-top: 56px;
+    }
+
+    .formule-shell {
+      background: rgba(13,31,60,0.03);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 5px;
+      transition: transform 0.35s var(--ease-out), box-shadow 0.35s, border-color 0.25s;
+    }
+    .formule-shell:hover { transform: translateY(-4px); box-shadow: 0 16px 48px rgba(26,107,255,0.12); border-color: rgba(26,107,255,0.2); }
+    .formule-shell.featured { border-color: rgba(26,107,255,0.35); box-shadow: 0 8px 32px rgba(26,107,255,0.1); }
+
+    .formule-card {
+      background: var(--surface);
+      border-radius: 20px;
+      padding: 28px 26px 24px;
+      height: 100%;
+      display: flex; flex-direction: column;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.9);
+    }
+
+    .formule-badge {
+      display: inline-block;
+      font-size: 9.5px; font-weight: 800;
+      text-transform: uppercase; letter-spacing: 1.2px;
+      padding: 4px 10px; border-radius: 100px;
+      margin-bottom: 20px; align-self: flex-start;
+    }
+    .badge-blue { background: var(--blue); color: #fff; }
+    .badge-navy { background: var(--navy); color: #fff; }
+    .badge-outline { background: var(--blue-pale); color: var(--blue); }
+
+    .formule-icon {
+      font-size: 28px; margin-bottom: 14px;
+    }
+    .formule-name {
+      font-size: 20px; font-weight: 800;
+      color: var(--navy); letter-spacing: -0.5px;
+      margin-bottom: 8px;
+    }
+    .formule-desc {
+      font-size: 13px; color: var(--muted);
+      line-height: 1.65; margin-bottom: 20px;
+      flex: 1;
+    }
+    .formule-price {
+      font-size: 36px; font-weight: 800;
+      color: var(--navy); letter-spacing: -1.5px;
+      line-height: 1; margin-bottom: 4px;
+    }
+    .formule-price span { font-size: 14px; font-weight: 500; color: var(--muted); letter-spacing: 0; }
+    .formule-duration { font-size: 12px; color: var(--muted); margin-bottom: 20px; }
+
+    .formule-features {
+      list-style: none;
+      margin-bottom: 24px;
+      display: flex; flex-direction: column;
+    }
+    .formule-features li {
+      font-size: 12.5px; color: var(--muted);
+      padding: 8px 0;
+      border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; gap: 8px;
+    }
+    .formule-features li:last-child { border-bottom: none; }
+    .feat-check {
+      width: 16px; height: 16px; border-radius: 50%;
+      background: var(--blue-light);
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .feat-check svg { width: 9px; height: 9px; stroke: var(--blue); fill: none; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
+
+    .btn-formule {
+      width: 100%;
+      background: var(--blue-light);
+      color: var(--blue);
+      border: none; border-radius: 100px;
+      padding: 13px 20px;
+      font-size: 13.5px; font-weight: 700;
+      cursor: pointer; font-family: inherit;
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      transition: all 0.3s var(--ease-out);
+    }
+    .btn-formule:hover { background: var(--blue); color: #fff; transform: translateY(-1px); box-shadow: 0 6px 20px rgba(26,107,255,0.3); }
+
+    .btn-formule-dark {
+      background: var(--blue); color: #fff;
+    }
+    .btn-formule-dark:hover { background: var(--navy); }
+
+    /* ══════════ COMMENT ÇA MARCHE ══════════ */
+    #how { background: var(--navy); }
+
+    .how-header .section-title { color: #fff; }
+    .how-header .section-sub { color: rgba(255,255,255,0.45); }
+    .how-header .section-eyebrow { color: var(--cyan); background: rgba(0,194,255,0.1); }
+
+    .steps-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-top: 56px;
+    }
+
+    .step-shell {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 24px;
+      padding: 5px;
+      transition: transform 0.35s var(--ease-out);
+    }
+    .step-shell:hover { transform: translateY(-3px); }
+
+    .step-card {
+      background: rgba(255,255,255,0.03);
+      border-radius: 20px;
+      padding: 32px 28px;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.07);
+    }
+
+    .step-num {
+      font-size: 11px; font-weight: 800;
+      text-transform: uppercase; letter-spacing: 2px;
+      color: var(--blue-mid); margin-bottom: 20px;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .step-num::after {
+      content: '';
+      flex: 1; height: 1px;
+      background: rgba(255,255,255,0.07);
+    }
+
+    .step-icon {
+      width: 52px; height: 52px; border-radius: 16px;
+      background: rgba(26,107,255,0.15);
+      border: 1px solid rgba(26,107,255,0.2);
+      display: flex; align-items: center; justify-content: center;
+      margin-bottom: 20px;
+    }
+    .step-icon svg { width: 24px; height: 24px; stroke: var(--blue-mid); fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+
+    .step-title { font-size: 18px; font-weight: 700; color: #fff; margin-bottom: 10px; letter-spacing: -0.3px; }
+    .step-desc { font-size: 13.5px; color: rgba(255,255,255,0.45); line-height: 1.7; }
+
+    /* ══════════ AVANTAGES ══════════ */
+    #avantages { background: var(--bg); }
+
+    .avantages-layout {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 56px;
+      align-items: center;
+      margin-top: 56px;
+    }
+
+    .avantages-list { display: flex; flex-direction: column; gap: 14px; }
+
+    .avantage-shell {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 4px;
+      transition: transform 0.3s var(--ease-out), border-color 0.2s;
+    }
+    .avantage-shell:hover { transform: translateX(4px); border-color: rgba(26,107,255,0.2); }
+
+    .avantage-card {
+      background: var(--surface);
+      border-radius: 17px;
+      padding: 18px 20px;
+      display: flex; align-items: flex-start; gap: 16px;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.9);
+    }
+    .avantage-icon {
+      width: 40px; height: 40px; border-radius: 12px;
+      background: var(--blue-light);
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0; font-size: 18px;
+    }
+    .avantage-title { font-size: 14px; font-weight: 700; color: var(--navy); margin-bottom: 3px; }
+    .avantage-desc { font-size: 12.5px; color: var(--muted); line-height: 1.6; }
+
+    /* Visual right side */
+    .avantages-visual {
+      background: linear-gradient(145deg, var(--navy) 0%, #0a2a5e 100%);
+      border-radius: 28px;
+      padding: 44px 40px;
+      position: relative;
+      overflow: hidden;
+    }
+    .avantages-visual::before {
+      content: '';
+      position: absolute;
+      width: 300px; height: 300px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(26,107,255,0.2) 0%, transparent 70%);
+      top: -80px; right: -80px;
+      pointer-events: none;
+    }
+    .avantages-visual-title {
+      font-size: 13px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 1.5px;
+      color: rgba(255,255,255,0.4); margin-bottom: 28px;
+    }
+    .avantages-nums { display: flex; flex-direction: column; gap: 24px; }
+    .avn-row { display: flex; align-items: center; gap: 16px; }
+    .avn-val {
+      font-size: 36px; font-weight: 800;
+      color: #fff; letter-spacing: -1.5px;
+      min-width: 80px; line-height: 1;
+    }
+    .avn-bar-wrap { flex: 1; }
+    .avn-label { font-size: 12px; color: rgba(255,255,255,0.5); margin-bottom: 6px; }
+    .avn-bar { height: 4px; background: rgba(255,255,255,0.08); border-radius: 4px; }
+    .avn-fill { height: 100%; border-radius: 4px; background: linear-gradient(90deg, var(--blue), var(--cyan)); }
+
+    /* ══════════ AVIS ══════════ */
+    #avis { background: var(--bg); padding-top: 0; }
+
+    .avis-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+      margin-top: 56px;
+    }
+    .avis-grid .avis-shell:nth-child(2) { margin-top: 24px; }
+
+    .avis-shell {
+      background: rgba(13,31,60,0.03);
+      border: 1px solid var(--border);
+      border-radius: 22px;
+      padding: 4px;
+      transition: transform 0.3s var(--ease-out);
+    }
+    .avis-shell:hover { transform: translateY(-3px); }
+
+    .avis-card {
+      background: var(--surface);
+      border-radius: 19px;
+      padding: 24px 22px;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.9);
+    }
+    .avis-stars { color: #f59e0b; font-size: 13px; letter-spacing: 2px; margin-bottom: 14px; }
+    .avis-text { font-size: 13.5px; color: var(--muted); line-height: 1.7; margin-bottom: 20px; font-style: italic; }
+    .avis-author { display: flex; align-items: center; gap: 10px; }
+    .avis-avatar {
+      width: 34px; height: 34px; border-radius: 50%;
+      background: var(--blue-light);
+      border: 1px solid rgba(26,107,255,0.2);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 11px; font-weight: 700; color: var(--blue);
+      flex-shrink: 0;
+    }
+    .avis-name { font-size: 13px; font-weight: 700; color: var(--navy); }
+    .avis-meta { font-size: 11.5px; color: var(--muted); margin-top: 1px; }
+
+    /* ══════════ RÉSERVATION ══════════ */
+    #reservation { background: var(--navy); }
+
+    .resa-header .section-title { color: #fff; }
+    .resa-header .section-sub { color: rgba(255,255,255,0.45); }
+    .resa-header .section-eyebrow { color: var(--cyan); background: rgba(0,194,255,0.1); }
+
+    .resa-layout {
+      display: grid;
+      grid-template-columns: 1fr 1.4fr;
+      gap: 48px;
+      margin-top: 56px;
+      align-items: start;
+    }
+
+    .resa-info { display: flex; flex-direction: column; gap: 20px; }
+    .resa-info-item {
+      display: flex; align-items: flex-start; gap: 14px;
+    }
+    .resa-info-icon {
+      width: 40px; height: 40px; border-radius: 12px;
+      background: rgba(26,107,255,0.15);
+      border: 1px solid rgba(26,107,255,0.2);
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .resa-info-icon svg { width: 18px; height: 18px; stroke: var(--blue-mid); fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+    .resa-info-title { font-size: 14px; font-weight: 700; color: #fff; margin-bottom: 2px; }
+    .resa-info-sub { font-size: 12.5px; color: rgba(255,255,255,0.4); line-height: 1.5; }
+
+    .form-shell {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 24px;
+      padding: 5px;
+    }
+    .form-inner {
+      background: rgba(255,255,255,0.04);
+      border-radius: 20px;
+      padding: 32px 28px;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.07);
+      display: flex; flex-direction: column; gap: 18px;
+    }
+
+    .form-row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .form-field { display: flex; flex-direction: column; gap: 7px; }
+    .form-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; color: rgba(255,255,255,0.4); }
+    .form-input {
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 12px;
+      padding: 12px 16px;
+      font-size: 14px; font-family: inherit;
+      color: #fff; outline: none;
+      transition: border-color 0.2s;
+    }
+    .form-input:focus { border-color: var(--blue); }
+    .form-input::placeholder { color: rgba(255,255,255,0.2); }
+    .form-select {
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 12px;
+      padding: 12px 16px;
+      font-size: 14px; font-family: inherit;
+      color: rgba(255,255,255,0.7); outline: none;
+      cursor: pointer; appearance: none;
+      transition: border-color 0.2s;
+    }
+    .form-select:focus { border-color: var(--blue); }
+    .form-select option { background: #0d1f3c; color: #fff; }
+    .form-textarea {
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 12px;
+      padding: 12px 16px;
+      font-size: 14px; font-family: inherit;
+      color: #fff; outline: none; resize: none;
+      min-height: 90px; line-height: 1.6;
+      transition: border-color 0.2s;
+    }
+    .form-textarea:focus { border-color: var(--blue); }
+    .form-textarea::placeholder { color: rgba(255,255,255,0.2); }
+
+    .btn-submit {
+      width: 100%;
+      background: var(--blue); color: #fff;
+      border: none; border-radius: 100px;
+      padding: 15px 24px;
+      font-size: 15px; font-weight: 700;
+      cursor: pointer; font-family: inherit;
+      display: flex; align-items: center; justify-content: center; gap: 10px;
+      transition: all 0.3s var(--ease-out);
+      box-shadow: 0 4px 20px rgba(26,107,255,0.4);
+    }
+    .btn-submit:hover { background: #fff; color: var(--blue); box-shadow: 0 8px 32px rgba(26,107,255,0.5); transform: translateY(-2px); }
+    .btn-submit-circle {
+      width: 24px; height: 24px; border-radius: 50%;
+      background: rgba(255,255,255,0.2);
+      display: flex; align-items: center; justify-content: center;
+      transition: transform 0.3s var(--ease-out);
+    }
+    .btn-submit:hover .btn-submit-circle { transform: translateX(2px) translateY(-1px); background: rgba(26,107,255,0.15); }
+    .btn-submit-circle svg { width: 12px; height: 12px; stroke: currentColor; fill: none; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+
+    .form-success {
+      display: none;
+      text-align: center; padding: 32px 20px;
+    }
+    .form-success.show { display: block; }
+    .form-success-icon { font-size: 40px; margin-bottom: 12px; }
+    .form-success h4 { font-size: 18px; font-weight: 700; color: #fff; margin-bottom: 8px; }
+    .form-success p { font-size: 13px; color: rgba(255,255,255,0.5); }
+
+    /* ══════════ FOOTER ══════════ */
+    footer {
+      background: #060c18;
+      padding: 44px 6vw;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+      flex-wrap: wrap;
+    }
+    .footer-logo {
+      font-size: 15px; font-weight: 800;
+      color: rgba(255,255,255,0.5);
+      display: flex; align-items: center; gap: 8px;
+    }
+    .footer-logo-mark {
+      width: 24px; height: 24px; border-radius: 7px;
+      background: rgba(26,107,255,0.25);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .footer-logo-mark svg { width: 12px; height: 12px; stroke: var(--blue-mid); fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+    .footer-links { display: flex; gap: 24px; list-style: none; flex-wrap: wrap; }
+    .footer-links a { font-size: 12px; color: rgba(255,255,255,0.2); text-decoration: none; transition: color 0.2s; }
+    .footer-links a:hover { color: rgba(255,255,255,0.5); }
+    .footer-copy { font-size: 11.5px; color: rgba(255,255,255,0.12); }
+
+    /* ══════════ REVEAL ══════════ */
+    .reveal { opacity: 0; transform: translateY(24px); transition: opacity 0.75s var(--ease-out), transform 0.75s var(--ease-out); }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+    .reveal-d1 { transition-delay: 0.08s; }
+    .reveal-d2 { transition-delay: 0.16s; }
+    .reveal-d3 { transition-delay: 0.24s; }
+
+    /* ══════════ TOAST ══════════ */
+    .toast {
+      position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%) translateY(80px);
+      background: var(--navy); color: #fff;
+      padding: 12px 22px; border-radius: 100px;
+      font-size: 13px; font-weight: 600;
+      box-shadow: 0 8px 32px rgba(13,31,60,0.25);
+      z-index: 999; transition: transform 0.4s var(--ease-out), opacity 0.4s;
+      opacity: 0; white-space: nowrap;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+
+    /* ══════════ RESPONSIVE ══════════ */
+    @media (max-width: 1024px) {
+      .formules-bento { grid-template-columns: 1fr 1fr; }
+      .avantages-layout { grid-template-columns: 1fr; }
+      .resa-layout { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 768px) {
+      nav { top: 12px; padding: 0 6px 0 18px; gap: 14px; }
+      .nav-links { display: none; }
+      .hero { padding: 0 24px 72px; }
+      .hero h1 { font-size: 46px; letter-spacing: -2px; }
+      .hero-stats { display: none; }
+      .hero-bike { display: none; }
+      .section-pad { padding: 80px 24px; }
+      .formules-bento { grid-template-columns: 1fr; }
+      .steps-grid { grid-template-columns: 1fr; }
+      .avis-grid { grid-template-columns: 1fr; }
+      .avis-grid .avis-shell:nth-child(2) { margin-top: 0; }
+      .form-row-2 { grid-template-columns: 1fr; }
+      footer { flex-direction: column; align-items: flex-start; gap: 20px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- SVG SYMBOLS -->
+<svg style="display:none" xmlns="http://www.w3.org/2000/svg">
+  <symbol id="ico-bike" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6">
+    <circle cx="5.5" cy="17.5" r="3.5"/><circle cx="18.5" cy="17.5" r="3.5"/>
+    <path d="M15 6h-5l-3 11.5M8 6l3 7h7"/>
+    <circle cx="15" cy="5" r="1"/>
+  </symbol>
+  <symbol id="ico-arrow" viewBox="0 0 14 14" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
+    <path d="M2 12 L12 2 M4 2 h8 v8"/>
+  </symbol>
+  <symbol id="ico-check" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5">
+    <polyline points="20 6 9 17 4 12"/>
+  </symbol>
+  <symbol id="ico-calendar" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8">
+    <rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>
+  </symbol>
+  <symbol id="ico-map" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8">
+    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>
+  </symbol>
+  <symbol id="ico-clock" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8">
+    <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
+  </symbol>
+  <symbol id="ico-droplet" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8">
+    <path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/>
+  </symbol>
+  <symbol id="ico-leaf" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8">
+    <path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10z"/>
+    <path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/>
+  </symbol>
+  <symbol id="ico-star" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8">
+    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+  </symbol>
+  <symbol id="ico-shield" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8">
+    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+  </symbol>
+  <symbol id="ico-phone" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8">
+    <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 1.27h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.82a16 16 0 0 0 5.55 5.55l1.58-1.58a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/>
+  </symbol>
+</svg>
+
+<!-- ══════════ NAV ══════════ -->
+<nav id="main-nav">
+  <a href="#" class="nav-logo">
+    <div class="nav-logo-mark">
+      <svg><use href="#ico-bike"/></svg>
+    </div>
+    VéloWash
+  </a>
+  <ul class="nav-links">
+    <li><a href="#formules">Formules</a></li>
+    <li><a href="#how">Comment ça marche</a></li>
+    <li><a href="#avis">Avis</a></li>
+    <li><a href="#reservation">Réserver</a></li>
+  </ul>
+  <div class="nav-actions">
+    <button class="btn-dark-toggle" onclick="toggleDark()" title="Mode sombre">
+      <svg class="icon-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+      <svg class="icon-moon" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+    </button>
+    <a href="#reservation" class="btn-ghost">Contact</a>
+    <a href="#reservation" class="btn-primary">
+      Réserver
+      <div class="btn-primary-circle">
+        <svg><use href="#ico-arrow"/></svg>
+      </div>
+    </a>
+  </div>
+</nav>
+
+<!-- ══════════ HERO ══════════ -->
+<div class="hero">
+  <div class="hero-glow"></div>
+  <div class="hero-glow-2"></div>
+  <div class="hero-bike">
+    <svg viewBox="0 0 420 280" fill="none" stroke="white" stroke-width="1.5">
+      <circle cx="90" cy="200" r="70"/>
+      <circle cx="330" cy="200" r="70"/>
+      <circle cx="90" cy="200" r="8" fill="white"/>
+      <circle cx="330" cy="200" r="8" fill="white"/>
+      <path d="M90 200 L180 100 L270 130 L330 200"/>
+      <path d="M180 100 L210 200"/>
+      <path d="M210 200 L270 130"/>
+      <path d="M165 100 L195 100"/>
+      <path d="M210 200 L200 220 L220 220 L210 200"/>
+      <path d="M270 130 L290 80 L310 80"/>
+      <path d="M300 60 C300 60 280 60 270 80 C260 100 270 130 270 130"/>
+      <circle cx="300" cy="60" r="12"/>
+    </svg>
+  </div>
+
+  <div class="hero-inner">
+    <div class="hero-eyebrow">
+      <div class="hero-dot"></div>
+      Service à domicile · Île-de-France
+    </div>
+    <h1>Votre vélo,<br/><em>propre.</em><br/>Sans effort.</h1>
+    <p class="hero-sub">On vient chez vous laver votre vélo de A à Z — route, VTT, électrique. Produits éco, matériel pro, résultat impeccable en moins d'une heure.</p>
+    <div class="hero-ctas">
+      <a href="#reservation" class="btn-hero">
+        Réserver un lavage
+        <div class="btn-hero-circle">
+          <svg><use href="#ico-arrow"/></svg>
+        </div>
+      </a>
+      <a href="#formules" class="btn-hero-ghost">Voir les formules</a>
+    </div>
+  </div>
+
+  <div class="hero-stats">
+    <div class="hero-stat">
+      <div class="hero-stat-val">+480</div>
+      <div class="hero-stat-lbl">vélos lavés</div>
+    </div>
+    <div class="hero-stat">
+      <div class="hero-stat-val">4.9★</div>
+      <div class="hero-stat-lbl">note moyenne</div>
+    </div>
+    <div class="hero-stat">
+      <div class="hero-stat-val">48h</div>
+      <div class="hero-stat-lbl">délai max</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ FORMULES ══════════ -->
+<section id="formules" class="section-pad">
+  <div class="reveal">
+    <div class="section-eyebrow">Formules</div>
+    <h2 class="section-title">Choisissez votre<br/><em>niveau de propre</em></h2>
+    <p class="section-sub">Trois formules adaptées à chaque vélo et chaque besoin. Déplacement inclus dans un rayon de 15 km.</p>
+  </div>
+
+  <div class="formules-bento">
+
+    <div class="formule-shell reveal reveal-d1">
+      <div class="formule-card">
+        <div class="formule-badge badge-outline">Essentiel</div>
+        <div class="formule-icon">🚿</div>
+        <div class="formule-name">Lavage Express</div>
+        <div class="formule-desc">Un nettoyage rapide et efficace pour redonner de l'éclat à votre vélo au quotidien.</div>
+        <div class="formule-price">19 <span>€</span></div>
+        <div class="formule-duration">⏱ Environ 25 min</div>
+        <ul class="formule-features">
+          <li><div class="feat-check"><svg><use href="#ico-check"/></svg></div>Rinçage cadre & roues</li>
+          <li><div class="feat-check"><svg><use href="#ico-check"/></svg></div>Nettoyage guidon & selle</li>
+          <li><div class="feat-check"><svg><use href="#ico-check"/></svg></div>Dégraissage chaîne</li>
+          <li><div class="feat-check"><svg><use href="#ico-check"/></svg></div>Lubrification chaîne</li>
+        </ul>
+        <button class="btn-formule" onclick="selectFormule('Lavage Express — 19€')">
+          Choisir cette formule
+        </button>
+      </div>
+    </div>
+
+    <div class="formule-shell featured reveal reveal-d2">
+      <div class="formule-card">
+        <div class="formule-badge badge-blue">⭐ Populaire</div>
+        <div class="formule-icon">✨</div>
+        <div class="formule-name">Lavage Complet</div>
+        <div class="formule-desc">Notre formule phare : nettoyage intégral + entretien mécanique de base pour un vélo comme neuf.</div>
+        <div class="formule-price">39 <span>€</span></div>
+        <div class="formule-duration">⏱ Environ 50 min</div>
+        <ul class="formule-features">
+          <li><div class="feat-check"><svg><use href="#ico-check"/></svg></div>Tout le Lavage Express</li>
+          <li><div class="feat-check"><svg><use href="#ico-check"/></svg></div>Nettoyage freins & jantes</li>
+          <li><div class="feat-check"><svg><use href="#ico-check"/></svg></div>Dérailleur & cassette</li>
+          <li><div class="feat-check"><svg><use href="#ico-check"/></svg></div>Contrôle pression pneus</li>
+          <li><div class="feat-check"><svg><use href="#ico-check"/></svg></div>Polish cadre</li>
+          <li><div class="feat-check"><svg><use href="#ico-check"/></svg></div>Produits biodégradables</li>
+        </ul>
+        <button class="btn-formule btn-formule-dark" onclick="selectFormule('Lavage Complet — 39€')">
+          Choisir cette formule
+        </button>
+      </div>
+    </div>
+
+    <div class="formule-shell reveal reveal-d3">
+      <div class="formule-card">
+        <div class="formule-badge badge-navy">Premium</div>
+        <div class="formule-icon">🏆</div>
+        <div class="formule-name">Détailing Pro</div>
+        <div class="formule-desc">Le traitement haut de gamme : nettoyage profond + traitement hydrophobe + révision complète.</div>
+        <div class="formule-price">69 <span>€</span></div>
+        <div class="formule-duration">⏱ Environ 90 min</div>
+        <ul class="formule-features">
+          <li><div class="feat-check"><svg><use href="#ico-check"/></svg></div>Tout le Lavage Complet</li>
+          <li><div class="feat-check"><svg><use href="#ico-check"/></svg></div>Traitement céramique cadre</li>
+          <li><div class="feat-check"><svg><use href="#ico-check"/></svg></div>Nettoyage roulements</li>
+          <li><div class="feat-check"><svg><use href="#ico-check"/></svg></div>Révision freins & câbles</li>
+          <li><div class="feat-check"><svg><use href="#ico-check"/></svg></div>Réglage dérailleur</li>
+          <li><div class="feat-check"><svg><use href="#ico-check"/></svg></div>Compte-rendu technique</li>
+        </ul>
+        <button class="btn-formule" onclick="selectFormule('Détailing Pro — 69€')">
+          Choisir cette formule
+        </button>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ══════════ COMMENT ÇA MARCHE ══════════ -->
+<section id="how" class="section-pad">
+  <div class="how-header reveal">
+    <div class="section-eyebrow">Simplicité</div>
+    <h2 class="section-title">Comment ça<br/><em>marche ?</em></h2>
+    <p class="section-sub">Trois étapes, zéro prise de tête. Vous n'avez qu'à ouvrir la porte.</p>
+  </div>
+
+  <div class="steps-grid">
+    <div class="step-shell reveal reveal-d1">
+      <div class="step-card">
+        <div class="step-num">Étape 01</div>
+        <div class="step-icon">
+          <svg><use href="#ico-calendar"/></svg>
+        </div>
+        <div class="step-title">Réservez en ligne</div>
+        <div class="step-desc">Choisissez votre formule, sélectionnez un créneau disponible et indiquez votre adresse. Confirmation immédiate par SMS.</div>
+      </div>
+    </div>
+
+    <div class="step-shell reveal reveal-d2">
+      <div class="step-card">
+        <div class="step-num">Étape 02</div>
+        <div class="step-icon">
+          <svg><use href="#ico-droplet"/></svg>
+        </div>
+        <div class="step-title">On vient chez vous</div>
+        <div class="step-desc">Notre technicien arrive avec tout le matériel nécessaire. Il s'installe discrètement et commence le lavage. Aucune installation de votre part.</div>
+      </div>
+    </div>
+
+    <div class="step-shell reveal reveal-d3">
+      <div class="step-card">
+        <div class="step-num">Étape 03</div>
+        <div class="step-icon">
+          <svg><use href="#ico-star"/></svg>
+        </div>
+        <div class="step-title">Reprenez la route</div>
+        <div class="step-desc">Votre vélo est propre, lubrifié et prêt à rouler. Vous payez à la fin de la prestation par CB ou virement. Simple.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ AVANTAGES ══════════ -->
+<section id="avantages" class="section-pad">
+  <div class="avantages-layout">
+    <div>
+      <div class="reveal">
+        <div class="section-eyebrow">Pourquoi nous</div>
+        <h2 class="section-title">Ce qui nous<br/><em>différencie</em></h2>
+        <p class="section-sub" style="margin-bottom:36px;">Nous ne sommes pas un lave-auto qui fait des vélos en passant. On est des passionnés de vélo, spécialisés uniquement dans le lavage à domicile.</p>
+      </div>
+      <div class="avantages-list">
+        <div class="avantage-shell reveal reveal-d1">
+          <div class="avantage-card">
+            <div class="avantage-icon">🏠</div>
+            <div>
+              <div class="avantage-title">100% à domicile</div>
+              <div class="avantage-desc">Pas besoin de se déplacer. On vient à l'heure qui vous convient, en semaine ou le week-end.</div>
+            </div>
+          </div>
+        </div>
+        <div class="avantage-shell reveal reveal-d2">
+          <div class="avantage-card">
+            <div class="avantage-icon">🌿</div>
+            <div>
+              <div class="avantage-title">Produits éco-certifiés</div>
+              <div class="avantage-desc">Nos produits sont biodégradables, sans solvants agressifs. On protège votre vélo et l'environnement.</div>
+            </div>
+          </div>
+        </div>
+        <div class="avantage-shell reveal reveal-d3">
+          <div class="avantage-card">
+            <div class="avantage-icon">🔧</div>
+            <div>
+              <div class="avantage-title">Expertise technique</div>
+              <div class="avantage-desc">Chaque technicien est formé à la mécanique vélo. On ne se contente pas de laver — on inspecte.</div>
+            </div>
+          </div>
+        </div>
+        <div class="avantage-shell reveal">
+          <div class="avantage-card">
+            <div class="avantage-icon">⚡</div>
+            <div>
+              <div class="avantage-title">Vélos électriques OK</div>
+              <div class="avantage-desc">On maîtrise le lavage des VAE : protection moteur, batterie et connecteurs. Aucun risque.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="avantages-visual reveal reveal-d2">
+      <div class="avantages-visual-title">Satisfaction clients</div>
+      <div class="avantages-nums">
+        <div class="avn-row">
+          <div class="avn-val">98%</div>
+          <div class="avn-bar-wrap">
+            <div class="avn-label">Clients satisfaits</div>
+            <div class="avn-bar"><div class="avn-fill" style="width:98%"></div></div>
+          </div>
+        </div>
+        <div class="avn-row">
+          <div class="avn-val">4.9</div>
+          <div class="avn-bar-wrap">
+            <div class="avn-label">Note moyenne / 5</div>
+            <div class="avn-bar"><div class="avn-fill" style="width:98%"></div></div>
+          </div>
+        </div>
+        <div class="avn-row">
+          <div class="avn-val">87%</div>
+          <div class="avn-bar-wrap">
+            <div class="avn-label">Clients récurrents</div>
+            <div class="avn-bar"><div class="avn-fill" style="width:87%"></div></div>
+          </div>
+        </div>
+        <div class="avn-row">
+          <div class="avn-val">48h</div>
+          <div class="avn-bar-wrap">
+            <div class="avn-label">Délai de réservation max</div>
+            <div class="avn-bar"><div class="avn-fill" style="width:70%"></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ AVIS ══════════ -->
+<section id="avis" class="section-pad">
+  <div class="reveal">
+    <div class="section-eyebrow">Témoignages</div>
+    <h2 class="section-title">Ils nous font<br/><em>confiance</em></h2>
+  </div>
+
+  <div class="avis-grid">
+    <div class="avis-shell reveal reveal-d1">
+      <div class="avis-card">
+        <div class="avis-stars">★★★★★</div>
+        <p class="avis-text">"Résultat bluffant ! Mon VTT boueux comme jamais est ressorti comme au premier jour. Le technicien était ponctuel, efficace, et m'a même signalé que mes freins étaient usés. Service top."</p>
+        <div class="avis-author">
+          <div class="avis-avatar">JD</div>
+          <div>
+            <div class="avis-name">Julien D.</div>
+            <div class="avis-meta">Vincennes · Lavage Complet</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="avis-shell reveal reveal-d2">
+      <div class="avis-card">
+        <div class="avis-stars">★★★★★</div>
+        <p class="avis-text">"Je commande le Détailing Pro tous les deux mois pour mon vélo de route. La chaîne glisse comme neuf, le cadre brille, et ça prend moins d'une heure. Parfait pour un dimanche matin."</p>
+        <div class="avis-author">
+          <div class="avis-avatar">CM</div>
+          <div>
+            <div class="avis-name">Claire M.</div>
+            <div class="avis-meta">Montreuil · Détailing Pro</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="avis-shell reveal reveal-d3">
+      <div class="avis-card">
+        <div class="avis-stars">★★★★★</div>
+        <p class="avis-text">"J'avais des doutes au départ — laver un vélo électrique à domicile ça m'inquiétait. Mais le technicien savait exactement quoi faire. Batterie protégée, moteur nickel. Je recommande sans hésiter."</p>
+        <div class="avis-author">
+          <div class="avis-avatar">TR</div>
+          <div>
+            <div class="avis-name">Thomas R.</div>
+            <div class="avis-meta">Saint-Mandé · Lavage Express</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ RÉSERVATION ══════════ -->
+<section id="reservation" class="section-pad">
+  <div class="resa-header reveal">
+    <div class="section-eyebrow">Réservation</div>
+    <h2 class="section-title">Prenez rendez-vous<br/><em>maintenant</em></h2>
+    <p class="section-sub">Réponse sous 2h en semaine. Créneaux disponibles 7j/7 de 8h à 20h.</p>
+  </div>
+
+  <div class="resa-layout">
+    <div class="resa-info reveal reveal-d1">
+      <div class="resa-info-item">
+        <div class="resa-info-icon"><svg><use href="#ico-map"/></svg></div>
+        <div>
+          <div class="resa-info-title">Zone de couverture</div>
+          <div class="resa-info-sub">Paris et petite couronne (75, 92, 93, 94) dans un rayon de 15 km autour du centre. Déplacement inclus.</div>
+        </div>
+      </div>
+      <div class="resa-info-item">
+        <div class="resa-info-icon"><svg><use href="#ico-clock"/></svg></div>
+        <div>
+          <div class="resa-info-title">Disponibilités</div>
+          <div class="resa-info-sub">7j/7 de 8h à 20h. Réservation possible jusqu'à 24h à l'avance. Premier créneau souvent disponible sous 48h.</div>
+        </div>
+      </div>
+      <div class="resa-info-item">
+        <div class="resa-info-icon"><svg><use href="#ico-phone"/></svg></div>
+        <div>
+          <div class="resa-info-title">Contact direct</div>
+          <div class="resa-info-sub">06 47 28 31 05 — ou via le formulaire ci-contre. Réponse garantie sous 2h en semaine.</div>
+        </div>
+      </div>
+      <div class="resa-info-item">
+        <div class="resa-info-icon"><svg><use href="#ico-shield"/></svg></div>
+        <div>
+          <div class="resa-info-title">Paiement à la fin</div>
+          <div class="resa-info-sub">Aucun acompte requis. Vous payez une fois la prestation terminée, par CB ou virement.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-shell reveal reveal-d2">
+      <div class="form-inner" id="resa-form">
+        <div class="form-row-2">
+          <div class="form-field">
+            <label class="form-label">Prénom</label>
+            <input class="form-input" type="text" id="f-prenom" placeholder="Marie" />
+          </div>
+          <div class="form-field">
+            <label class="form-label">Nom</label>
+            <input class="form-input" type="text" id="f-nom" placeholder="Dupont" />
+          </div>
+        </div>
+        <div class="form-row-2">
+          <div class="form-field">
+            <label class="form-label">Téléphone</label>
+            <input class="form-input" type="tel" id="f-tel" placeholder="06 12 34 56 78" />
+          </div>
+          <div class="form-field">
+            <label class="form-label">Email</label>
+            <input class="form-input" type="email" id="f-email" placeholder="vous@exemple.fr" />
+          </div>
+        </div>
+        <div class="form-field">
+          <label class="form-label">Adresse (ville + code postal)</label>
+          <input class="form-input" type="text" id="f-adresse" placeholder="12 rue de la Paix, 75001 Paris" />
+        </div>
+        <div class="form-row-2">
+          <div class="form-field">
+            <label class="form-label">Formule souhaitée</label>
+            <select class="form-select" id="f-formule">
+              <option value="">Choisir une formule…</option>
+              <option value="Lavage Express — 19€">Lavage Express — 19€</option>
+              <option value="Lavage Complet — 39€">Lavage Complet — 39€</option>
+              <option value="Détailing Pro — 69€">Détailing Pro — 69€</option>
+            </select>
+          </div>
+          <div class="form-field">
+            <label class="form-label">Type de vélo</label>
+            <select class="form-select" id="f-type">
+              <option value="">Type de vélo…</option>
+              <option value="Route">Route / Gravel</option>
+              <option value="VTT">VTT</option>
+              <option value="Vélo urbain">Vélo urbain</option>
+              <option value="VAE">Vélo électrique (VAE)</option>
+              <option value="Autre">Autre</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-field">
+          <label class="form-label">Créneau souhaité</label>
+          <input class="form-input" type="datetime-local" id="f-date" />
+        </div>
+        <div class="form-field">
+          <label class="form-label">Message (optionnel)</label>
+          <textarea class="form-textarea" id="f-message" placeholder="Précisions sur votre vélo, état particulier, accès, code d'entrée…"></textarea>
+        </div>
+        <button class="btn-submit" onclick="submitResa()">
+          Envoyer ma demande
+          <div class="btn-submit-circle">
+            <svg><use href="#ico-arrow"/></svg>
+          </div>
+        </button>
+      </div>
+      <div class="form-success" id="form-success">
+        <div class="form-success-icon">✅</div>
+        <h4>Demande envoyée !</h4>
+        <p>Nous vous recontactons dans les 2h pour confirmer votre créneau. À très vite !</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ FOOTER ══════════ -->
+<footer>
+  <div class="footer-logo">
+    <div class="footer-logo-mark">
+      <svg><use href="#ico-bike"/></svg>
+    </div>
+    VéloWash
+  </div>
+  <ul class="footer-links">
+    <li><a href="#">Mentions légales</a></li>
+    <li><a href="#">CGV</a></li>
+    <li><a href="#">Politique de confidentialité</a></li>
+    <li><a href="#">Contact</a></li>
+  </ul>
+  <div class="footer-copy">© 2026 VéloWash — Service à domicile · Île-de-France</div>
+</footer>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script>
+/* ══ DARK MODE ══ */
+function toggleDark() {
+  const isDark = document.documentElement.classList.toggle('dark');
+  localStorage.setItem('velowash-dark', isDark ? '1' : '0');
+}
+(function initDark() {
+  const saved = localStorage.getItem('velowash-dark');
+  const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+  if (saved === '1' || (saved === null && prefersDark)) {
+    document.documentElement.classList.add('dark');
+  }
+})();
+
+/* ══ NAV SCROLL ══ */
+window.addEventListener('scroll', () => {
+  document.getElementById('main-nav').classList.toggle('scrolled', window.scrollY > 40);
+}, { passive: true });
+
+/* ══ SCROLL REVEAL ══ */
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+      observer.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.1 });
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+/* ══ TOAST ══ */
+let toastTimer;
+function showToast(msg) {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => el.classList.remove('show'), 3000);
+}
+
+/* ══ FORMULE SELECT ══ */
+function selectFormule(formule) {
+  const sel = document.getElementById('f-formule');
+  sel.value = formule;
+  document.getElementById('reservation').scrollIntoView({ behavior: 'smooth' });
+  showToast('✓ Formule sélectionnée — remplissez le formulaire ci-dessous');
+}
+
+/* ══ RÉSERVATION ══ */
+function submitResa() {
+  const prenom  = document.getElementById('f-prenom').value.trim();
+  const nom     = document.getElementById('f-nom').value.trim();
+  const tel     = document.getElementById('f-tel').value.trim();
+  const email   = document.getElementById('f-email').value.trim();
+  const adresse = document.getElementById('f-adresse').value.trim();
+  const formule = document.getElementById('f-formule').value;
+
+  if (!prenom || !nom) { showToast('⚠ Veuillez indiquer votre prénom et nom.'); return; }
+  if (!tel && !email)  { showToast('⚠ Indiquez un téléphone ou un email.'); return; }
+  if (!adresse)        { showToast('⚠ Veuillez indiquer votre adresse.'); return; }
+  if (!formule)        { showToast('⚠ Veuillez choisir une formule.'); return; }
+
+  // Sauvegarder la demande en localStorage
+  const demande = { prenom, nom, tel, email, adresse, formule,
+    type: document.getElementById('f-type').value,
+    date: document.getElementById('f-date').value,
+    message: document.getElementById('f-message').value,
+    createdAt: new Date().toISOString()
+  };
+  const demandes = JSON.parse(localStorage.getItem('velowash-demandes') || '[]');
+  demandes.push(demande);
+  localStorage.setItem('velowash-demandes', JSON.stringify(demandes));
+
+  document.getElementById('resa-form').style.display = 'none';
+  document.getElementById('form-success').classList.add('show');
+}
+</script>
+</body>
+</html>
